@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useState } from 'react';
 import Webcam from 'react-webcam';
 import { Box, Link, IconButton } from '@chakra-ui/react';
-import { FaCamera, FaEraser } from 'react-icons/fa'; // Asegúrate de tener instalada la librería react-icons
+import { FaCamera, FaEraser } from 'react-icons/fa';
 
 const PhotoBooth = () => {
   const webcamRef = useRef(null);
@@ -15,11 +15,13 @@ const PhotoBooth = () => {
     const image = new Image();
     image.onload = () => {
       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-      ctx.font = '30px Arial';
-      ctx.fillStyle = 'red';
-      ctx.fillText('Te quiero', 10, 50);
-      const imgWithText = canvas.toDataURL('image/jpeg');
-      setImageSrc(imgWithText);
+      const teQuieroImage = new Image();
+      teQuieroImage.onload = () => {
+        ctx.drawImage(teQuieroImage, 10, 10, 200, 200);
+        const imgWithText = canvas.toDataURL('image/jpg');
+        setImageSrc(imgWithText);
+      };
+      teQuieroImage.src = '/assets/teQuiero.png'; // Ruta relativa desde la carpeta public
     };
     image.src = imageSrc;
   }, [webcamRef, canvasRef]);
@@ -34,49 +36,48 @@ const PhotoBooth = () => {
             Descargar Foto
           </Link>
           <IconButton
-        colorScheme="teal"
-        aria-label="Capturar Foto"
-        icon={<FaEraser />}
-        onClick={() => setImageSrc(null)}
-        position="absolute"
-        bottom="10px"
-        left="50%"
-        transform="translateX(-50%)"
-        isRound
-        size="lg"
-      />
+            colorScheme="teal"
+            aria-label="Capturar Foto"
+            icon={<FaEraser />}
+            onClick={() => setImageSrc(null)}
+            position="absolute"
+            bottom="10px"
+            left="50%"
+            transform="translateX(-50%)"
+            isRound
+            size="lg"
+          />
         </Box>
-      ) :
-      (<Box position="relative" width="100%" maxWidth="360px">
-      <Webcam
-        audio={false}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        width="100%"
-        height="auto"
-        videoConstraints={{ 
-          facingMode: "user", 
-          width: 640, 
-          height: 480 
-        }}
-        style={{ borderRadius: '10px' }}
-        mirrored={true} // Mirror the webcam feed
-      />
-      <IconButton
-        colorScheme="teal"
-        aria-label="Capturar Foto"
-        icon={<FaCamera />}
-        onClick={capture}
-        position="absolute"
-        bottom="10px"
-        left="50%"
-        transform="translateX(-50%)"
-        isRound
-        size="lg"
-      />
-    </Box>)
-    
-    }
+      ) : (
+        <Box position="relative" width="100%" maxWidth="360px">
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            width="100%"
+            height="auto"
+            videoConstraints={{ 
+              facingMode: "user", 
+              width: 640, 
+              height: 480 
+            }}
+            style={{ borderRadius: '10px' }}
+            mirrored={true}
+          />
+          <IconButton
+            colorScheme="teal"
+            aria-label="Capturar Foto"
+            icon={<FaCamera />}
+            onClick={capture}
+            position="absolute"
+            bottom="10px"
+            left="50%"
+            transform="translateX(-50%)"
+            isRound
+            size="lg"
+          />
+        </Box>
+      )}
     </Box>
   );
 };
