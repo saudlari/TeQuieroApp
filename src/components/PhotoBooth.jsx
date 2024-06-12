@@ -1,6 +1,7 @@
 import React, { useRef, useCallback, useState } from 'react';
 import Webcam from 'react-webcam';
-import { Button, Box, Link } from '@chakra-ui/react';
+import { Box, Link, IconButton } from '@chakra-ui/react';
+import { FaCamera, FaEraser } from 'react-icons/fa'; // Asegúrate de tener instalada la librería react-icons
 
 const PhotoBooth = () => {
   const webcamRef = useRef(null);
@@ -9,7 +10,6 @@ const PhotoBooth = () => {
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
-    setImageSrc(imageSrc);
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const image = new Image();
@@ -18,30 +18,65 @@ const PhotoBooth = () => {
       ctx.font = '30px Arial';
       ctx.fillStyle = 'red';
       ctx.fillText('Te quiero', 10, 50);
+      const imgWithText = canvas.toDataURL('image/jpeg');
+      setImageSrc(imgWithText);
     };
     image.src = imageSrc;
   }, [webcamRef, canvasRef]);
 
   return (
-    <Box textAlign="center" mt={5}>
+    <Box display="flex" flexDirection="column" alignItems="center" mt={5}>
+      <canvas ref={canvasRef} width={640} height={480} style={{ display: 'none' }} />
+      {imageSrc ? (
+        <Box mt={4} textAlign="center">
+          <img src={imageSrc} alt="captured" width="100%" style={{ borderRadius: '10px' }} />
+          <Link href={imageSrc} download="foto_con_filtro.jpg" color="teal.500" mt={4} display="block">
+            Descargar Foto
+          </Link>
+          <IconButton
+        colorScheme="teal"
+        aria-label="Capturar Foto"
+        icon={<FaEraser />}
+        onClick={() => setImageSrc(null)}
+        position="absolute"
+        bottom="10px"
+        left="50%"
+        transform="translateX(-50%)"
+        isRound
+        size="lg"
+      />
+        </Box>
+      ) :
+      (<Box position="relative" width="100%" maxWidth="360px">
       <Webcam
         audio={false}
         ref={webcamRef}
         screenshotFormat="image/jpeg"
-        width={640}
-        height={480}
+        width="100%"
+        height="auto"
+        videoConstraints={{ 
+          facingMode: "user", 
+          width: 640, 
+          height: 480 
+        }}
+        style={{ borderRadius: '10px' }}
+        mirrored={true} // Mirror the webcam feed
       />
-      <Button colorScheme="teal" onClick={capture} mt={4}>
-        Capturar Foto
-      </Button>
-      {imageSrc && (
-        <Box mt={4}>
-          <canvas ref={canvasRef} width={640} height={480} />
-          <Link href={imageSrc} download="foto_con_filtro.jpg" color="teal.500" mt={4} display="block">
-            Descargar Foto
-          </Link>
-        </Box>
-      )}
+      <IconButton
+        colorScheme="teal"
+        aria-label="Capturar Foto"
+        icon={<FaCamera />}
+        onClick={capture}
+        position="absolute"
+        bottom="10px"
+        left="50%"
+        transform="translateX(-50%)"
+        isRound
+        size="lg"
+      />
+    </Box>)
+    
+    }
     </Box>
   );
 };
