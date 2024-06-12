@@ -1,6 +1,6 @@
-// components/PhotoBooth.js
 import React, { useRef, useCallback, useState } from 'react';
 import Webcam from 'react-webcam';
+import { Button, Box, Link } from '@chakra-ui/react';
 
 const PhotoBooth = () => {
   const webcamRef = useRef(null);
@@ -23,7 +23,7 @@ const PhotoBooth = () => {
   }, [webcamRef, canvasRef]);
 
   return (
-    <div>
+    <Box textAlign="center" mt={5}>
       <Webcam
         audio={false}
         ref={webcamRef}
@@ -31,14 +31,18 @@ const PhotoBooth = () => {
         width={640}
         height={480}
       />
-      <button onClick={capture}>Capturar Foto</button>
+      <Button colorScheme="teal" onClick={capture} mt={4}>
+        Capturar Foto
+      </Button>
       {imageSrc && (
-        <div>
+        <Box mt={4}>
           <canvas ref={canvasRef} width={640} height={480} />
-          <a href={imageSrc} download="foto_con_filtro.jpg">Descargar Foto</a>
-        </div>
+          <Link href={imageSrc} download="foto_con_filtro.jpg" color="teal.500" mt={4} display="block">
+            Descargar Foto
+          </Link>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
