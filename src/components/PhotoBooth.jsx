@@ -3,7 +3,7 @@ import Webcam from 'react-webcam';
 import { Box, Link, IconButton } from '@chakra-ui/react';
 import { FaCamera, FaEraser } from 'react-icons/fa';
 
-const PhotoBooth = () => {
+const PhotoBooth = ({onUpload}) => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [imageSrc, setImageSrc] = useState(null);
@@ -34,6 +34,9 @@ const PhotoBooth = () => {
           <img src={imageSrc} alt="captured" width="100%" style={{ borderRadius: '10px' }} />
           <Link href={imageSrc} download="foto_con_filtro.jpg" color="teal.500" mt={4} display="block">
             Descargar Foto
+          </Link>
+          <Link onClick={()=> onUpload(imageSrc)}>
+            Enviar
           </Link>
           <IconButton
             colorScheme="teal"
